@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "lastUpdated": "2026-03-31",
+    "totalWorked": 5
+  },
+  "municipios": {
+    "28079": { "worked": true, "year": 2025, "project": "Web corporativa" },
+    "28092": { "worked": true, "year": 2024, "project": "App móvil" },
+    "28006": { "worked": true, "year": 2025, "project": "Consultoría IT" },
+    "28148": { "worked": true, "year": 2023, "project": "Infraestructura" },
+    "28065": { "worked": true, "year": 2026, "project": "Plataforma digital" }
+  }
+}

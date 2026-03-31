@@ -1,0 +1,49 @@
+:root {
+  --bg-dark: #0a0e17;
+  --bg-surface: #111827;
+  --bg-panel: #0f1729;
+  --neon-blue: #00d4ff;
+  --neon-cyan: #0ff;
+  --neon-dim: #1a6e8a;
+  --glow-color: rgba(0, 212, 255, 0.6);
+  --glow-soft: rgba(0, 212, 255, 0.15);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --region-fill: #1a2332;
+  --region-fill-hover: #1e3a5f;
+  --region-fill-worked: #0c4a6e;
+  --region-fill-worked-hover: #0e5a84;
+  --region-stroke: #00d4ff;
+  --region-stroke-dim: #1a4a5e;
+  --region-stroke-width: 0.5;
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

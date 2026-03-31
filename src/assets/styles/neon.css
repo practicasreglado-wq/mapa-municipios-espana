@@ -1,0 +1,230 @@
+/* Glow effects and neon animations */
+
+.region-path {
+  fill: var(--region-fill);
+  stroke: var(--region-stroke-dim);
+  stroke-width: var(--region-stroke-width);
+  cursor: pointer;
+  transition: fill 0.25s ease, stroke 0.25s ease, stroke-width 0.25s ease;
+}
+
+.region-path:hover {
+  fill: var(--region-fill-hover);
+  stroke: var(--neon-blue);
+  stroke-width: 1.2;
+}
+
+.region-path.worked {
+  fill: var(--region-fill-worked);
+  stroke: var(--neon-cyan);
+  stroke-width: 0.7;
+}
+
+.region-path.worked:hover {
+  fill: var(--region-fill-worked-hover);
+  stroke: var(--neon-cyan);
+  stroke-width: 1.4;
+}
+
+.border-mesh {
+  fill: none;
+  stroke: var(--neon-blue);
+  stroke-width: 0.3;
+  stroke-opacity: 0.6;
+  pointer-events: none;
+  filter: url(#glow);
+}
+
+.context-outline {
+  fill: var(--region-fill);
+  fill-opacity: 0.15;
+  stroke: var(--region-stroke-dim);
+  stroke-width: 0.3;
+  stroke-opacity: 0.3;
+  pointer-events: none;
+}
+
+.inset-border {
+  fill: none;
+  stroke: var(--neon-blue);
+  stroke-width: 1;
+  stroke-dasharray: 4 2;
+  stroke-opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Tooltip */
+.map-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-panel);
+  border: 1px solid var(--neon-blue);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--text-primary);
+  box-shadow: 0 0 12px var(--glow-soft), 0 0 4px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.map-tooltip.visible {
+  opacity: 1;
+}
+
+.map-tooltip .tooltip-name {
+  font-weight: 600;
+  color: var(--neon-blue);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.map-tooltip .tooltip-status {
+  font-size: 11px;
+  color: var(--neon-cyan);
+  margin-top: 2px;
+}
+
+/* Breadcrumb */
+.map-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  min-height: 48px;
+}
+
+.breadcrumb-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--neon-dim);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--neon-blue);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 16px;
+}
+
+.breadcrumb-back:hover {
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 8px var(--glow-soft);
+  background: rgba(0, 212, 255, 0.05);
+}
+
+.breadcrumb-back:disabled {
+  opacity: 0.3;
+  cursor: default;
+  box-shadow: none;
+}
+
+.breadcrumb-separator {
+  color: var(--neon-dim);
+  font-size: 10px;
+}
+
+.breadcrumb-item {
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  padding: 4px 0;
+}
+
+.breadcrumb-item:hover {
+  color: var(--neon-blue);
+}
+
+.breadcrumb-item.active {
+  color: var(--neon-blue);
+  cursor: default;
+  text-shadow: 0 0 8px var(--glow-soft);
+}
+
+/* Legend */
+.map-legend {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background: var(--bg-panel);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 50;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.legend-swatch.worked {
+  background: var(--region-fill-worked);
+  border-color: var(--neon-cyan);
+}
+
+.legend-swatch.not-worked {
+  background: var(--region-fill);
+  border-color: var(--region-stroke-dim);
+}
+
+/* Loading overlay */
+.map-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 23, 0.8);
+  z-index: 200;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--region-stroke-dim);
+  border-top-color: var(--neon-blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Pulse glow for worked municipalities */
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px var(--neon-cyan)); }
+  50% { filter: drop-shadow(0 0 6px var(--neon-cyan)); }
+}
