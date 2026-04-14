@@ -96,6 +96,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
 import * as d3 from 'd3'
+import { easeBackOut } from 'd3'
 import { geoConicConformalSpain } from 'd3-composite-projections'
 import * as topojson from 'topojson-client'
 import MapBreadcrumb from './MapBreadcrumb.vue'
@@ -229,7 +230,8 @@ async function transitionToView(getFeatures, fitFeatures) {
       const activePaths = d3.select(activeLayerRef.value).selectAll('path')
       await activePaths
         .transition()
-        .duration(250)
+        .duration(300)
+        .ease(easeBackOut)
         .style('opacity', 0)
         .end()
         .catch(() => {})
@@ -258,7 +260,8 @@ async function transitionToView(getFeatures, fitFeatures) {
       activePaths.style('opacity', 0)
       await activePaths
         .transition()
-        .duration(400)
+        .duration(500)
+        .ease(easeBackOut)
         .style('opacity', 1)
         .end()
         .catch(() => {})
@@ -277,7 +280,8 @@ async function transitionToFullSpain() {
     const activePaths = d3.select(activeLayerRef.value).selectAll('path')
     await activePaths
       .transition()
-      .duration(250)
+      .duration(300)
+      .ease(easeBackOut)
       .style('opacity', 0)
       .end()
       .catch(() => {})
@@ -298,7 +302,8 @@ async function transitionToFullSpain() {
     activePaths.style('opacity', 0)
     await activePaths
       .transition()
-      .duration(400)
+      .duration(500)
+      .ease(easeBackOut)
       .style('opacity', 1)
       .end()
       .catch(() => {})
