@@ -109,6 +109,26 @@ export function useMapData() {
     }
   }
 
+  // Preload all data (CCAA + Provinces + all 54 municipalities)
+  async function preloadAll() {
+    try {
+      await loadStatus()
+      await loadCcaa()
+      await loadProvinces()
+
+      // Load all 54 municipality files in parallel
+      const municipalityPromises = Array.from({ length: 54 }, (_, i) => {
+        const cpro = String(i + 1).padStart(2, '0')
+        return loadMunicipalities(cpro)
+      })
+
+      await Promise.all(municipalityPromises)
+    } catch (err) {
+      console.error('Failed to preload all data:', err)
+      throw err
+    }
+  }
+
   return {
     loading,
     statusData,
@@ -127,5 +147,6 @@ export function useMapData() {
     isWorked,
     getMuniStatus,
     preloadProvinces,
+    preloadAll,
   }
 }

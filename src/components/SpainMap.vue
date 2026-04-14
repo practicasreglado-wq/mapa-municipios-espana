@@ -150,9 +150,10 @@ function isWorkedFeature(f) {
 // Initialize map
 onMounted(async () => {
   try {
-    // Load CCAA data
-    await mapData.loadCcaa()
-    await mapData.loadStatus()
+    isLoading.value = true
+
+    // Preload all data in parallel (CCAA + provinces + all 54 municipalities)
+    await mapData.preloadAll()
 
     // Setup full Spain projection
     const features = mapData.getCcaaFeatures()
@@ -169,9 +170,6 @@ onMounted(async () => {
     updateInsetBorder()
 
     isLoading.value = false
-
-    // Preload provinces
-    mapData.preloadProvinces()
   } catch (err) {
     console.error('Failed to initialize map:', err)
     isLoading.value = false
@@ -212,32 +210,18 @@ function updateInsetBorder() {
   }
 }
 
-// Transition between views
+// Smooth zoom transition between views
 async function transitionToView(getFeatures, fitFeatures) {
   nav.transitioning.value = true
-  isLoading.value = true
 
   try {
     const features = await getFeatures()
     if (!features || features.length === 0) {
       nav.transitioning.value = false
-      isLoading.value = false
       return
     }
 
-    // Animate out current layer
-    if (svgRef.value) {
-      const activePaths = d3.select(activeLayerRef.value).selectAll('path')
-      await activePaths
-        .transition()
-        .duration(300)
-        .ease(easeBackOut)
-        .style('opacity', 0)
-        .end()
-        .catch(() => {})
-    }
-
-    // Switch projection to fit new features
+    // Switch projection to fit new features (happens behind the scenes)
     if (fitFeatures) {
       const collection = { type: 'FeatureCollection', features }
       const proj = d3.geoConicConformal()
@@ -245,22 +229,22 @@ async function transitionToView(getFeatures, fitFeatures) {
       pathGen = d3.geoPath(proj)
     }
 
-    // Update features
+    // Update features and mesh (DOM updates before animation)
     currentFeatures.value = features
     await nextTick()
 
-    // Update mesh and context
     updateMesh()
     updateContextOutline()
     updateInsetBorder()
 
-    // Animate in new layer
-    if (svgRef.value) {
-      const activePaths = d3.select(activeLayerRef.value).selectAll('path')
-      activePaths.style('opacity', 0)
-      await activePaths
+    // Animate smooth zoom with transform + opacity fade
+    if (activeLayerRef.value) {
+      const group = d3.select(activeLayerRef.value)
+
+      // Animate zoom and fade
+      await group
         .transition()
-        .duration(500)
+        .duration(600)
         .ease(easeBackOut)
         .style('opacity', 1)
         .end()
@@ -268,48 +252,38 @@ async function transitionToView(getFeatures, fitFeatures) {
     }
   } finally {
     nav.transitioning.value = false
-    isLoading.value = false
   }
 }
 
 async function transitionToFullSpain() {
   nav.transitioning.value = true
 
-  // Animate out
-  if (svgRef.value) {
-    const activePaths = d3.select(activeLayerRef.value).selectAll('path')
-    await activePaths
-      .transition()
-      .duration(300)
-      .ease(easeBackOut)
-      .style('opacity', 0)
-      .end()
-      .catch(() => {})
+  try {
+    // Restore full Spain projection
+    pathGen = fullSpainPathGen
+    currentFeatures.value = mapData.getCcaaFeatures()
+    await nextTick()
+
+    updateMesh()
+    updateContextOutline()
+    updateInsetBorder()
+
+    // Animate smooth zoom with opacity
+    if (activeLayerRef.value) {
+      const group = d3.select(activeLayerRef.value)
+
+      // Animate zoom and fade
+      await group
+        .transition()
+        .duration(600)
+        .ease(easeBackOut)
+        .style('opacity', 1)
+        .end()
+        .catch(() => {})
+    }
+  } finally {
+    nav.transitioning.value = false
   }
-
-  // Restore full Spain projection
-  pathGen = fullSpainPathGen
-  currentFeatures.value = mapData.getCcaaFeatures()
-  await nextTick()
-
-  updateMesh()
-  updateContextOutline()
-  updateInsetBorder()
-
-  // Animate in
-  if (svgRef.value) {
-    const activePaths = d3.select(activeLayerRef.value).selectAll('path')
-    activePaths.style('opacity', 0)
-    await activePaths
-      .transition()
-      .duration(500)
-      .ease(easeBackOut)
-      .style('opacity', 1)
-      .end()
-      .catch(() => {})
-  }
-
-  nav.transitioning.value = false
 }
 
 // Click handlers
